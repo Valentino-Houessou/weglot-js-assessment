@@ -1,6 +1,6 @@
 const path = require("path");
 
-const Slot = require(path.join(__dirname, "../src/Slot.js"));
+const Slot = require("../src/Slot.js");
 const slotWithoutDay = "08:45-12:59";
 const slotWithoutBound = "1 12:59";
 const slotWithoutMinute = "1 08-12:59";
