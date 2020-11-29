@@ -1,5 +1,4 @@
-const path = require("path");
-const Slot = require(path.join(__dirname, "../Slot.js"));
+const Slot = require("../Slot.js");
 
 module.exports = (data) => {
   if (!Array.isArray(data)) {
@@ -10,10 +9,11 @@ module.exports = (data) => {
 
   data.forEach((elt) => {
     const slot = new Slot(elt);
-    weekSlots[slot.dayNumber] = weekSlots[slot.dayNumber]
-      ? [...weekSlots[slot.dayNumber], slot]
-      : [slot];
+    if (weekSlots.has(slot.dayNumber)) {
+      weekSlots.set(slot.dayNumber, [...weekSlots.get(slot.dayNumber), slot]);
+    } else {
+      weekSlots.set(slot.dayNumber, [slot]);
+    }
   });
-
   return weekSlots;
 };

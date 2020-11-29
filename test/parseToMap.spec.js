@@ -1,5 +1,3 @@
-const path = require("path");
-
 const parseToMap = require("../src/utils/parseToMap.js");
 const slotsData = [
   "5 08:00-17:59",
