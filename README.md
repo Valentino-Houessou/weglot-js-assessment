@@ -90,6 +90,7 @@ envoyez nous le lien de ce repo, avec l'accès si nécessaire.
 Passez en revue le code ci dessous
 
 Si vous pensez que des modifications sont utiles
+
 1. écrivez un commentaire comme pendant une review de pull request
 2. puis écrivez le code comme vous l'imagineriez
 
@@ -101,154 +102,195 @@ Si vous pensez que des modifications sont utiles
 - Ces bouts de codes fictifs n'ont rien à voir les uns avec les autres
 - Ne vous attardez pas sur des détails, comme le naming, qui ne nous intéressent pas ici
 
-1. 
+1.
 
 ```js
 const data = [
-   { value: "1", label: "One" },
-   { value: "2", label: "Two" },
-   { value: "3", label: "Three" },
+  { value: '1', label: 'One' },
+  { value: '2', label: 'Two' },
+  { value: '3', label: 'Three' },
 ];
 
 function getValues() {
+  /*
    return data.reduce((acc, { value }) => {
       acc.push(value);
       return acc;
    }, []);
+   */
+
+  /* Array.map suits more for our needs here */
+  return data.map((elt) => elt.value);
 }
 ```
 
-2. 
+2.
 
 ```js
 async function getIndexes() {
-   return await fetch('https://api.coingecko.com/api/v3/indexes').then(res => res.json());
+  /* return await fetch('https://api.coingecko.com/api/v3/indexes').then((res) =>
+    res.json()
+  ); */
+
+  /* We should first check if the fetch resolve a response or reject */
+  const response = await fetch('https://api.coingecko.com/api/v3/indexes');
+  if (!response.ok) {
+    const message = `An error has occured when fetching: ${response.status}`;
+    throw new Error(message);
+  }
+  return response.json();
 }
 
 async function analyzeIndexes() {
-   const indexes = await getIndexes().catch(_ => {
-      throw new Error('Unable to fetch indexes');
-   });
-   return indexes;
+  const indexes = await getIndexes().catch((_) => {
+    throw new Error('Unable to fetch indexes');
+  });
+  return indexes;
 }
 ```
 
-3. 
+3.
 
 ```js
-let state;
+/* We can initialize the state and use spread operator if user exist */
+//let state;
+let state = {
+  user: null,
+  project: null,
+};
+
 const user = getUser();
 if (user) {
-   const project = getProject(user.id);
-   state = {
-      user,
-      project
-   };
-} else {
-   state = {
-      user: null,
-      project: null
-   };
-}
+  const project = getProject(user.id);
+  state = {
+    ...state,
+    user,
+    project,
+  };
+  /* state = {
+    user,
+    project,
+  }; */
+} /* else {
+  state = {
+    user: null,
+    project: null,
+  };
+} */
 ctx.body = state;
 ```
 
-4. 
+4.
 
 ```js
 function getQueryProvider() {
   const url = window.location.href;
   const [_, provider] = url.match(/provider=([^&]*)/);
-  if (provider) {
-     return provider;
+  /* It will throw and error if there is no match */
+  const params = url.match(/provider=([^&]*)/);
+  if (params && params.length > 1) {
+    return params[1];
   }
   return;
 }
 ```
 
-5. 
+5.
 
 ```js
 function getParagraphTexts() {
-   const texts = [];
-   document.querySelectorAll("p").forEach(p => {
+  const texts = [];
+  /* querySelectorAll('p') could return null if there is no p tag */
+  /* document.querySelectorAll('p').forEach((p) => {
+    texts.push(p);
+  }); */
+  const paragraphs = document.querySelectorAll('p');
+  if (paragraphs) {
+    paragraphs.forEach((p) => {
       texts.push(p);
-   });
-   return texts;
+    });
+  }
+  return texts;
 }
 ```
 
-6. 
+6.
 
 ```js
 function Employee({ id }) {
-   const [error, setError] = useState(null);
-   const [loading, setLoading] = useState(true);
-   const [employee, setEmployee] = useState({});
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [employee, setEmployee] = useState({});
 
-   useEffect(() => {
-      getEmployee(id)
-         .then(employee => {
-            setEmployee(employee);
-            setLoading(false);
-         })
-         .catch(_ => {
-            setError('Unable to fetch employee');
-            setLoading(false);
-         });
-   }, [id]);
+  // we need to put error, loading and employee in the second argument of useEffect
+  // to allow rendering only if those values changed
+  useEffect(() => {
+    getEmployee(id)
+      .then((employee) => {
+        setEmployee(employee);
+        setLoading(false);
+      })
+      .catch((_) => {
+        setError('Unable to fetch employee');
+        setLoading(false);
+      });
+  }, [id, error, loading, employee]);
 
-   if (error) {
-      return <Error />;
-   }
+  if (error) {
+    return <Error />;
+  }
 
-   if (loading) {
-      return <Loading />;
-   }
+  if (loading) {
+    return <Loading />;
+  }
 
-   return (
-      <Table>
-         <Row>
-            <Cell>{employee.firstName}</Cell>
-            <Cell>{employee.lastName}</Cell>
-            <Cell>{employee.position}</Cell>
-            <Cell>{employee.project}</Cell>
-            <Cell>{employee.salary}</Cell>
-            <Cell>{employee.yearHired}</Cell>
-            <Cell>{employee.wololo}</Cell>
-         </Row>
-      </Table>
-   );
+  return (
+    <Table>
+      <Row>
+        <Cell>{employee.firstName}</Cell>
+        <Cell>{employee.lastName}</Cell>
+        <Cell>{employee.position}</Cell>
+        <Cell>{employee.project}</Cell>
+        <Cell>{employee.salary}</Cell>
+        <Cell>{employee.yearHired}</Cell>
+        <Cell>{employee.wololo}</Cell>
+      </Row>
+    </Table>
+  );
 }
 ```
 
-7. 
+7.
 
 ```js
 async function getFilledIndexes() {
-   try {
-      const filledIndexes = [];
-      const indexes = await getIndexes();
-      const status = await getStatus();
-      const usersId = await getUsersId();
-      
-      for (let index of indexes) {
-         if (index.status === status.filled && users.includes(index.userId)) {
-            filledIndexes.push(index);
-         }
+  try {
+    const filledIndexes = [];
+    const indexes = await getIndexes();
+    const status = await getStatus();
+    const usersId = await getUsersId();
+
+    /* 
+      - users doesn't exist, only usersId is given
+    */
+    for (let index of indexes) {
+      /* if (index.status === status.filled && users.includes(index.userId)) { */
+      if (index.status === status.filled && usersId === index.userId) {
+        filledIndexes.push(index);
       }
-      return filledIndexes;
-   } catch(_) {
-      throw new Error ('Unable to get indexes');
-   }
+    }
+    return filledIndexes;
+  } catch (_) {
+    throw new Error('Unable to get indexes');
+  }
 }
 ```
 
-8. 
+8.
 
 ```js
 function getUserSettings(user) {
-   if (user) {
+  /* if (user) {
       const project = getProject(user.id);
       if (project) {
          const settings = getSettings(project.id);
@@ -257,6 +299,17 @@ function getUserSettings(user) {
          }
       }
    }
-   return {};
+   return {}; */
+  /* To avoid if imbrication we can use try finally statements */
+  let response = {};
+  try {
+    const project = getProject(user.id);
+    settings = getSettings(project.id);
+    if (settings) {
+      response = settings;
+    }
+  } finally {
+    return response;
+  }
 }
 ```
