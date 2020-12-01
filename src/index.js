@@ -1,24 +1,23 @@
 const fs = require("fs");
-const path = require("path");
 const fsPromise = fs.promises;
+const parseToMap = require("./utils/parseToMap.js");
+const getAvailableSlot = require("./getAvailableSlot.js");
 
-const inputPath = path.join(__dirname, "../data/input3.txt");
-
-const Slot = require(path.join(__dirname, "./Slot.js"));
-const parseToMap = require(path.join(__dirname, "./utils/parseToMap.js"));
-
-const main = async () => {
+const main = async (inputPath) => {
   try {
     // read the file
     const inputStream = await fsPromise.readFile(inputPath, "utf8");
     // parse the stream into array
     const data = inputStream.split("\n");
+    // parse the array into map
     const weekSlots = parseToMap(data);
+    // get the available slot
+    const availableSlot = getAvailableSlot(weekSlots);
+
+    return availableSlot;
   } catch (error) {
     throw error;
   }
 };
 
-main().catch((err) => {
-  console.log(err);
-});
+module.exports = main;
