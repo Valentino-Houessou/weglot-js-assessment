@@ -11,7 +11,7 @@ module.exports = (weekSlots) => {
     throw new Error('expects a Map instance as argument');
   }
 
-  for (let idx = 1; idx <= WEEK_DAYS_COUNT; idx += idx) {
+  for (let idx = 1; idx <= WEEK_DAYS_COUNT; idx += 1) {
     let starting = WORKING_BOUND_START;
     let ending = starting + MEETING_DURATION;
 
