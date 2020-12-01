@@ -15,7 +15,7 @@ describe("the creation of a slot", () => {
   });
   it("must have a day number", () => {
     const slot = new Slot(correctSlot);
-    expect(slot.dayNumber).toBe("1");
+    expect(slot.dayNumber).toBe(1);
   });
   it("must have a start", () => {
     const slot = new Slot(correctSlot);
@@ -24,5 +24,12 @@ describe("the creation of a slot", () => {
   it("must have an end", () => {
     const slot = new Slot(correctSlot);
     expect(slot.end).toBe(779);
+  });
+});
+
+describe("slot to string", () => {
+  it("must return a good string format", () => {
+    const slot = new Slot(correctSlot);
+    expect(slot.toString()).toBe(correctSlot);
   });
 });

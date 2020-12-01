@@ -1,3 +1,5 @@
+const parseMinutesToHours = require("./utils/slotFormater.js")
+  .parseMinutesToHours;
 module.exports = class Slot {
   /**
    * create a new slot
@@ -25,8 +27,14 @@ module.exports = class Slot {
       throw "bad slot format";
     }
 
-    this.dayNumber = slotData[0];
+    this.dayNumber = parseInt(slotData[0]);
     this.start = parseInt(startBound[0]) * 60 + parseInt(startBound[1]);
     this.end = parseInt(endBound[0]) * 60 + parseInt(endBound[1]);
+  }
+
+  toString() {
+    return `${this.dayNumber} ${parseMinutesToHours(
+      this.start
+    )}-${parseMinutesToHours(this.end)}`;
   }
 };
