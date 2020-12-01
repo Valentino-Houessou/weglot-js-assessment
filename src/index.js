@@ -4,7 +4,6 @@ const getAvailableSlot = require('./getAvailableSlot.js');
 
 const fsPromise = fs.promises;
 
-// test CI
 const main = async (inputPath) => {
   // read the file
   const inputStream = await fsPromise.readFile(inputPath, 'utf8');
