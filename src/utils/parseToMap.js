@@ -1,8 +1,8 @@
-const Slot = require("../Slot.js");
+const Slot = require('../Slot.js');
 
 module.exports = (data) => {
   if (!Array.isArray(data)) {
-    throw "expects an array as input";
+    throw new Error('expects an array as input');
   }
 
   const weekSlots = new Map();

@@ -1,14 +1,14 @@
 const formater = (raw) => {
   if (!Number.isInteger(raw)) {
-    throw "expect an integer as argument";
+    throw new Error('expect an integer as argument');
   }
 
-  let formated = "";
+  let formated = '';
 
   if (raw === 0) {
-    formated = "00";
-  } else if (parseInt(Math.log10(raw)) + 1 < 2) {
-    formated = "0" + raw;
+    formated = '00';
+  } else if (parseInt(Math.log10(raw), 10) + 1 < 2) {
+    formated = `0${raw}`;
   } else {
     formated = raw.toString();
   }
@@ -18,7 +18,7 @@ const formater = (raw) => {
 
 const parseMinutesToHours = (minutes) => {
   if (!Number.isInteger(minutes)) {
-    throw "expect an integer as argument";
+    throw new Error('expect an integer as argument');
   }
   const hours = Math.trunc(minutes / 60);
   const remainMinutes = minutes - hours * 60;
@@ -32,7 +32,7 @@ const slotFormater = (day, start, end) => {
     !Number.isInteger(start) ||
     !Number.isInteger(end)
   ) {
-    throw "expect an integer as argument";
+    throw new Error('expect an integer as argument');
   }
   return `${day} ${parseMinutesToHours(start)}-${parseMinutesToHours(end)}`;
 };
